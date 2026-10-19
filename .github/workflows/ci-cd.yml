@@ -1,0 +1,63 @@
+name: Docker CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main","test-ci" ]
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up .env for testing
+        run: |
+          echo "POSTGRES_DB=uber_db" > .env
+          echo "POSTGRES_USER=uber_user" >> .env
+          echo "POSTGRES_PASSWORD=uber_password_123" >> .env
+
+      - name: Validate Docker Compose
+        run: docker compose config --quiet
+
+  build-and-push:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push API image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./api_service
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/uber-api:latest
+
+      - name: Build and push Matcher image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./matcher_service
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/uber-matcher:latest
+
+      - name: Build and push Location image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./location_service
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/uber-location:latest
+
+      - name: Build and push Simulator image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./driver_simulator
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/uber-simulator:latest
