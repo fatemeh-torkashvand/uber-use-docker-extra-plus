@@ -1,0 +1,12 @@
+.env
+*.env.local
+__pycache__/
+*.pyc
+.pytest_cache/
+loki/data/
+*.log
+logs/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
