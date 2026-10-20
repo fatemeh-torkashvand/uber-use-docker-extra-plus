@@ -34,57 +34,58 @@ bash
 
 
 2. Create your environment file based on the example:
-   
+```   
 bash
    cp .env.example .env
+```
   
 
 3. Build and start all services in detached mode:
-   
+```
 bash
    docker compose up -d --build
-  
+  ```
 
 
  API Testing (via Nginx Gateway)
 
 1. Register a Rider:
 
-
+```
 bash
 curl -X POST http://localhost/register \
 -H "Content-Type: application/json" \
 -d '{"name": "Carlos", "type": "rider"}'
-
+```
 
 Expected Output: {"message":"Rider registered successfully","user_id":5}
 
 2. Request a Ride:
 
-
+```
 bash
 curl -X POST http://localhost/request_ride \
 -H "Content-Type: application/json" \
 -d '{"rider_id": 5, "latitude": 34.05, "longitude": -118.24}'
-
+```
 
 Expected Output (Instant!): {"message":"Ride request received. Searching for a driver.","trip_id":2}
 
 3. Monitor Matcher Logs:
 
-
+```
 bash
 docker compose logs -f matcher
-
+```
 
 You will see logs like: [x] Received ride request..., [*] Found nearest driver..., [*] Successfully assigned driver...
 
 4. Check Trip Status:
 
-
+```
 bash
 curl http://localhost/trip/2
-
+```
 
 Initial Output: {"driver_id":null,"status":"requested"}
 Final Output: {"driver_id":1,"status":"assigned"} (driver_id will vary)
