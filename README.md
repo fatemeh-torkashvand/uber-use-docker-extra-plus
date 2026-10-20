@@ -26,9 +26,11 @@ This repository is equipped with GitHub Actions:
 
 1. Clone the repository:
    
+```
 bash
    git clone https://github.com/fatemeh-torkashvand/uber-use-docker-extra-plus.git
    cd uber-use-docker-extra-plus
+```
 
 
 2. Create your environment file based on the example:
